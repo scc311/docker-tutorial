@@ -20,7 +20,7 @@ See [here](./2.%20Web%20Server).
 
 This will just cover the use of environment variables.
 
-See [here]().
+See [here](./3.%20Environment%20Variables).
 
 ## Use Case: Minecraft Servers
 
