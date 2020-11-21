@@ -28,7 +28,7 @@ This will cover how to quickly run a Minecraft server using Docker. To represent
 
 > This is for the Java version of Minecraft
 
-See [here]().
+See [here](./4.%20Minecraft%20Server).
 
 ## Use Case: 2 Java Versions
 
