@@ -1,9 +1,7 @@
 name: Docker Web Server
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   docker-build-push:
