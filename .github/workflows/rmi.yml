@@ -1,0 +1,63 @@
+name: Docker RMI CW
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker-build-push:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+      - 
+        name: Extract Repo Owner
+        shell: bash
+        run: echo "##[set-output name=owner;]$(echo ${GITHUB_REPOSITORY%%/*} | tr '[:upper:]' '[:lower:]')"
+        id: extract_owner
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - 
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - 
+        name: Login to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ steps.extract_owner.outputs.owner }}
+          password: ${{ secrets.CR_PAT }}
+      -
+        name: Build and Push Client
+        uses: docker/build-push-action@v2
+        with:
+          context: "./5. Java RMI/solution"
+          file: "./5. Java RMI/solution/client-code/Dockerfile"
+          platforms: linux/amd64,linux/arm64/v8,linux/arm/v6,linux/arm/v7,linux/386
+          push: true
+          tags: |
+            ghcr.io/${{ steps.extract_owner.outputs.owner }}/rmi-client:tutorial
+          no-cache: false
+          labels: |
+            org.opencontainers.image.title=RMIClient
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.html_url }}
+      -
+        name: Build and Push Server
+        uses: docker/build-push-action@v2
+        with:
+          context: "./5. Java RMI/solution"
+          file: "./5. Java RMI/solution/server-code/Dockerfile"
+          platforms: linux/amd64,linux/arm64/v8,linux/arm/v6,linux/arm/v7,linux/386
+          push: true
+          tags: |
+            ghcr.io/${{ steps.extract_owner.outputs.owner }}/rmi-server:tutorial
+          no-cache: false
+          labels: |
+            org.opencontainers.image.title=RMIServer
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.html_url }}
